@@ -104,7 +104,6 @@ import static io.trino.SystemSessionProperties.SCALE_WRITERS;
 import static io.trino.SystemSessionProperties.TASK_MAX_WRITER_COUNT;
 import static io.trino.SystemSessionProperties.TASK_MIN_WRITER_COUNT;
 import static io.trino.SystemSessionProperties.USE_PREFERRED_WRITE_PARTITIONING;
-import static io.trino.plugin.hive.metastore.file.TestingFileHiveMetastore.createTestingFileHiveMetastore;
 import static io.trino.plugin.iceberg.IcebergFileFormat.AVRO;
 import static io.trino.plugin.iceberg.IcebergFileFormat.ORC;
 import static io.trino.plugin.iceberg.IcebergFileFormat.PARQUET;
@@ -305,7 +304,7 @@ public abstract class BaseIcebergConnectorTest
                 .matches("CREATE SCHEMA iceberg.tpch\n" +
                         "AUTHORIZATION USER user\n" +
                         "WITH \\(\n" +
-                        "\\s+location = '.*/iceberg_data/tpch'\n" +
+                        "\\s+location = '.*/tpch'\n" +
                         "\\)");
     }
 
@@ -4194,7 +4193,7 @@ public abstract class BaseIcebergConnectorTest
         // Using Iceberg provided file size fails the query
         assertQueryFails(
                 "SELECT * FROM test_iceberg_file_size",
-                "(Malformed ORC file\\. Invalid file metadata.*)|(.*Error opening Iceberg split.* Incorrect file size \\(%s\\) for file .*)".formatted(alteredValue));
+                "(Malformed ORC file\\. Invalid file metadata.*)|(.*Malformed Parquet file.*)");
 
         dropTable("test_iceberg_file_size");
     }
@@ -6955,7 +6954,7 @@ public abstract class BaseIcebergConnectorTest
                         "iceberg.catalog.type", "TESTING_FILE_METASTORE",
                         "hive.metastore.catalog.dir", dataDirectory.getPath()));
 
-        queryRunner.installPlugin(new TestingHivePlugin(createTestingFileHiveMetastore(dataDirectory)));
+        queryRunner.installPlugin(new TestingHivePlugin(dataDirectory.toPath()));
         queryRunner.createCatalog(
                 hiveRedirectionCatalog,
                 "hive",
