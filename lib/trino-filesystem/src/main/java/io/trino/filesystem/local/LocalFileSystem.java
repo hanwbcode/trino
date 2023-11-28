@@ -77,7 +77,9 @@ public class LocalFileSystem
             Files.delete(filePath);
         }
         catch (IOException e) {
-            throw handleException(location, e);
+            if (Files.exists(filePath)) {
+                throw handleException(location, e);
+            }
         }
     }
 
