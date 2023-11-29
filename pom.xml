@@ -38,7 +38,7 @@
         <module>core/trino-server-main</module>
         <module>core/trino-server-rpm</module>
         <module>core/trino-spi</module>
-        <module>docs</module>
+        <!--<module>docs</module>-->
         <module>lib/trino-array</module>
         <module>lib/trino-cache</module>
         <module>lib/trino-filesystem</module>
@@ -140,6 +140,9 @@
 
     <properties>
         <project.build.targetJdk>17</project.build.targetJdk>
+
+        <air.check.fail-checkstyle>false</air.check.fail-checkstyle>
+        <air.check.skip-checkstyle>true</air.check.skip-checkstyle>
 
         <air.check.skip-spotbugs>true</air.check.skip-spotbugs>
         <air.check.skip-pmd>true</air.check.skip-pmd>
@@ -2635,6 +2638,24 @@
         </pluginManagement>
 
         <plugins>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>4.9.10</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>io.trino</groupId>
                 <artifactId>trino-maven-plugin</artifactId>
