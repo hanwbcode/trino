@@ -21,10 +21,14 @@ import io.trino.spi.connector.ConnectorFactory;
 import io.trino.testing.TestingConnectorContext;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
+import static com.google.common.io.MoreFiles.deleteRecursively;
+import static com.google.common.io.RecursiveDeleteOption.ALLOW_INSECURE;
+import static java.nio.file.Files.createTempDirectory;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class TestHudiPlugin
@@ -44,16 +48,18 @@ public class TestHudiPlugin
 
     @Test
     public void testCreateTestingConnector()
+            throws IOException
     {
-        Plugin plugin = new TestingHudiPlugin(Optional.empty());
-        ConnectorFactory factory = getOnlyElement(plugin.getConnectorFactories());
-        factory.create(
-                "test",
-                        Map.of(
-                                "hive.metastore.uri", "thrift://foo:1234",
-                                "bootstrap.quiet", "true"),
-                        new TestingConnectorContext())
-                .shutdown();
+        Path tempDir = createTempDirectory("test");
+        try {
+            Plugin plugin = new TestingHudiPlugin(tempDir);
+            ConnectorFactory factory = getOnlyElement(plugin.getConnectorFactories());
+            factory.create("test", Map.of(), new TestingConnectorContext())
+                    .shutdown();
+        }
+        finally {
+            deleteRecursively(tempDir, ALLOW_INSECURE);
+        }
     }
 
     @Test
