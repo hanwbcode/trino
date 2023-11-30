@@ -86,6 +86,7 @@ development. Use the following options to create a run configuration:
 
 * Main Class: `io.trino.server.DevelopmentServer`
 * VM Options: `-ea -Dconfig=etc/config.properties -Dlog.levels-file=etc/log.properties -Djdk.attach.allowAttachSelf=true`
+* OR VM Options:`-ea -XX:+UseG1GC -XX:G1HeapRegionSize=32M -XX:+UseGCOverheadLimit -XX:+ExplicitGCInvokesConcurrent -Xmx2G -Dconfig=etc/config.properties -Dlog.levels-file=etc/log.properties`
 * Working directory: `$MODULE_DIR$`
 * Use classpath of module: `trino-server-dev`
 
