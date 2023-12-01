@@ -30,9 +30,14 @@ public final class DevelopmentServer
     protected Iterable<? extends Module> getAdditionalModules()
     {
         return ImmutableList.of(binder -> {
-            newOptionalBinder(binder, PluginsProvider.class).setBinding()
-                    .to(DevelopmentPluginsProvider.class).in(Scopes.SINGLETON);
-            configBinder(binder).bindConfig(DevelopmentLoaderConfig.class);
+
+            newOptionalBinder(binder, PluginsProvider.class)
+                    .setBinding()
+                    .to(DevelopmentPluginsProvider.class)
+                    .in(Scopes.SINGLETON);
+
+            configBinder(binder)
+                    .bindConfig(DevelopmentLoaderConfig.class);
         });
     }
 
